@@ -1,6 +1,9 @@
 package com.microleaf.order_service.controller;
 
 import com.microleaf.order_service.entity.OrderEntity;
+import com.microleaf.order_service.entity.PaymentOption;
+import com.microleaf.order_service.feignClient.PaymentInterserviceCommunication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +16,9 @@ import java.util.UUID;
 @RestController
 public class OrderController {
 
+    @Autowired
+    private PaymentInterserviceCommunication paymentInterserviceCommunication;
+
     @GetMapping("/all")
     public List<OrderEntity> getAllOrders() {
         System.out.println("Request received");
@@ -23,13 +29,18 @@ public class OrderController {
     }
 
 
-    @GetMapping("/payment/options")
-    public List getAllPaymentOptions() {
-        String url = "http://localhost:8082/payment";
-        RestTemplate restTemplate = new RestTemplate();
-        var re = restTemplate.exchange(url, HttpMethod.GET, null, List.class);
+//    @GetMapping("/payment/options")
+//    public List getallpayments() {
+//        String url = "http://localhost:8082/payment";
+//        RestTemplate restTemplate = new RestTemplate();
+//        var re = restTemplate.exchange(url, HttpMethod.GET, null, List.class);
+//
+//        return re.getBody();
+//
+//    }
 
-        return re.getBody();
-
+    @GetMapping("/payment/option")
+    public List<PaymentOption> getAllPaymentOption() {
+        return paymentInterserviceCommunication.getAllPaymentOptions();
     }
 }
